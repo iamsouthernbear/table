@@ -24,6 +24,29 @@ xhr.send();
 
 
 
+// Поиск по таблице
+function search () {
+  const input = document.querySelector('input');
+  const filter = input.value.toUpperCase();
+  const table = document.querySelector('table');
+
+  for (let i = 0; i < table.rows.length; i++) {
+    for (let j = 0; j < table.rows[i].cells.length; j++) {
+      table.rows[i].cells[j].style.backgroundColor = 'white';
+      table.rows[i].cells[j].style.color = 'black';
+      if (table.rows[i].cells[j].innerHTML.toUpperCase().indexOf(filter) > -1 && filter != '') {
+        table.rows[i].cells[j].style.backgroundColor = 'red';
+        table.rows[i].cells[j].style.color = 'white';
+      };
+    };
+  };
+};
+
+
+
+
+
+
 function addTable (responseText) {
   const body = document.querySelector('body');
 
@@ -37,7 +60,7 @@ function addTable (responseText) {
   table.appendChild(thead);
 
   // Заполняем header таблицы
-  for (let key in responseText[0]) {
+  Object.keys(responseText[0]).forEach(function (key) {
     const td = document.createElement('td');
 
     // Присвоение data-атрибута для делегирования
@@ -49,7 +72,8 @@ function addTable (responseText) {
 
     td.innerHTML = '<td>' + key + '</td>';
     thead.appendChild(td);
-  };
+  });
+
 
   // Создаем тело таблицы
   const tbody = document.createElement('tbody');
