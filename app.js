@@ -3,6 +3,8 @@ const xhr = new XMLHttpRequest();
 // Формирование запроса
 xhr.open('GET', 'http://localhost:3000/');
 
+let jsoooon;
+
 // Действия по получению всех данных по запросу
 xhr.onreadystatechange = function () {
 
@@ -12,13 +14,53 @@ xhr.onreadystatechange = function () {
     alert(xhr.status + ': ' + xhr.statusText);
   } else {
     // alert(xhr.responseText);
-    const myJson = JSON.parse(xhr.responseText);
-    addTable(myJson);
+    jsoooon = JSON.parse(xhr.responseText);
+    // addTable(myJson);
+    // myJson.sort(sortNum);
+    addTable(jsoooon);
   };
 };
 
 // Отправка запроса
 xhr.send();
+
+
+
+
+
+
+
+
+
+
+// Сортировка по столбцам
+function sortNum (a, b) {
+  const col = event.currentTarget.dataset.col;
+  return a[col] - b[col];
+}
+
+function sortStr (a, b) {
+  const col = event.currentTarget.dataset.col;
+  if (a[col] > b[col]) return 1;
+  if (a[col] < b[col]) return -1;
+  return 0;
+}
+
+function sortCol () {
+  const table = document.querySelector('table');
+  const col = event.currentTarget.dataset.col;
+  const type = event.currentTarget.dataset.type;
+  table.remove();
+
+  if (type == 'string') {
+    jsoooon.sort(sortStr);
+    addTable(jsoooon);
+  } else {
+    jsoooon.sort(sortNum);
+    addTable(jsoooon);
+  };
+  
+};
 
 
 
@@ -46,7 +88,7 @@ function search () {
 
 
 
-
+// Рисуем таблицу
 function addTable (responseText) {
   const body = document.querySelector('body');
 
@@ -62,7 +104,8 @@ function addTable (responseText) {
   // Заполняем header таблицы
   Object.keys(responseText[0]).forEach(function (key) {
     const td = document.createElement('td');
-
+    td.setAttribute('data-col', key);
+    td.setAttribute('onclick', 'sortCol()');
     // Присвоение data-атрибута для делегирования
     if (key == 'id' || key == 'age') {
       td.setAttribute('data-type', 'number');
