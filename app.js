@@ -34,6 +34,14 @@ xhr.send();
 
 
 // Сортировка по столбцам
+let status = {};
+
+function resetStatus () {
+  for (let key in status) {
+    status[key] = '';
+  }
+};
+
 function sortNum (a, b) {
   const col = event.currentTarget.dataset.col;
   return a[col] - b[col];
@@ -52,14 +60,34 @@ function sortCol () {
   const type = event.currentTarget.dataset.type;
   table.remove();
 
-  if (type == 'string') {
-    jsoooon.sort(sortStr);
+  if (status[col] == 'sorted') {
+    jsoooon.reverse();
     addTable(jsoooon);
+    console.log('ok');
   } else {
-    jsoooon.sort(sortNum);
-    addTable(jsoooon);
-  };
-  
+    if (type == 'string') {
+      jsoooon.sort(sortStr);
+      addTable(jsoooon);
+      resetStatus();
+      status[col] = 'sorted';
+    } else {
+      jsoooon.sort(sortNum);
+      addTable(jsoooon);
+      resetStatus();
+      status[col] = 'sorted';
+    };
+  }
+
+  // if (type == 'string') {
+  //   jsoooon.sort(sortStr);
+  //   addTable(jsoooon);
+  //   status[col] = 'sorted';
+  //   console.log(status[col]);
+  // } else {
+  //   jsoooon.sort(sortNum);
+  //   addTable(jsoooon);
+  // };
+
 };
 
 
