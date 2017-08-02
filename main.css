@@ -1,7 +1,10 @@
 thead > td:hover {
-  background-color: red;
-  color: white;
+  text-decoration: underline;
   cursor: pointer;
+}
+
+td {
+  cursor: default;
 }
 
 input {
@@ -13,4 +16,27 @@ input {
 thead > td {
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.perPage {
+  border-top: none;
+  border-bottom: none;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.pageSelector {
+  border-top: none;
+}
+
+.perPage:first-child {
+  background-color: red;
+}
+
+.pageSelector:first-child {
+  background-color: red;
 }

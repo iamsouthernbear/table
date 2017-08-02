@@ -13,11 +13,9 @@ xhr.onreadystatechange = function () {
   if (xhr.status != 200) {
     alert(xhr.status + ': ' + xhr.statusText);
   } else {
-    // alert(xhr.responseText);
     jsoooon = JSON.parse(xhr.responseText);
-    // addTable(myJson);
-    // myJson.sort(sortNum);
     addTable(jsoooon);
+    pagination();
   };
 };
 
@@ -29,6 +27,80 @@ xhr.send();
 
 
 
+// Пагинация
+let perPageSelector = 10;
+
+const editPerPageSelector = function () {
+  const lightning = document.querySelectorAll('.perPage');
+  const table = document.querySelector('table');
+  const bottomBar = document.querySelector('.bottomBar');
+  const perPage = event.currentTarget.value;
+  perPageSelector = perPage;
+  table.remove();
+  while (bottomBar.firstChild) {
+    bottomBar.removeChild(bottomBar.firstChild);
+  };
+  addTable(jsoooon);
+  pagination();
+  for (let i = 0; i < lightning.length; i++) {
+    lightning[i].style.backgroundColor = 'white';
+  };
+  let target = event.currentTarget;
+  target.style.backgroundColor = 'red';
+};
+
+function selectPage () {
+  const lastPageSelector = document.querySelector('.bottomBar').lastChild.innerHTML;
+  const table = document.querySelector('table');
+  let tbody = document.querySelector('tbody');
+  tbody.remove();
+  const btnPageSelector = event.currentTarget.value;
+  tbody = document.createElement('tbody');
+  table.appendChild(tbody);
+
+  const firstPoint = +btnPageSelector * perPageSelector;
+  let lastPoint = (+btnPageSelector + 1) * perPageSelector;
+
+  if (lastPoint/perPageSelector == lastPageSelector) {
+    lastPoint = jsoooon.length;
+  }
+  // Заполняем тело таблицы
+  for (let i = firstPoint; i < lastPoint; i++) {
+    const tr = document.createElement('tr');
+
+    Object.keys(jsoooon[i]).forEach(function (key) {
+      const element = jsoooon[i];
+      const td = document.createElement('td');
+      td.innerHTML = element[key];
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  };
+
+  const lightning = document.querySelectorAll('.pageSelector');
+  for (let i = 0; i < lightning.length; i++) {
+    lightning[i].style.backgroundColor = 'white';
+  };
+  const target = event.currentTarget;
+  target.style.backgroundColor = 'red';
+};
+
+// Рисуем кнопки переключения страниц
+function pagination () {
+  const body = document.querySelector('body');
+  const bottomBar = document.querySelector('.bottomBar');
+  const btnPageAmount = Math.ceil(jsoooon.length/perPageSelector);
+  for (let i = 0; i < btnPageAmount; i++) {
+    const btnPageSelector = document.createElement('button');
+    btnPageSelector.setAttribute('class', 'btn btn-default pageSelector');
+    btnPageSelector.setAttribute('value', i);
+    btnPageSelector.setAttribute('onclick', 'selectPage()');
+    btnPageSelector.innerHTML = i + 1;
+    bottomBar.insertAdjacentElement('beforeEnd', btnPageSelector);
+  };
+};
+
 
 
 
@@ -36,17 +108,20 @@ xhr.send();
 // Сортировка по столбцам
 let status = {};
 
+// Обнуляем статус
 function resetStatus () {
   for (let key in status) {
     status[key] = '';
   }
 };
 
+// Сортировка чисел
 function sortNum (a, b) {
   const col = event.currentTarget.dataset.col;
   return a[col] - b[col];
 }
 
+// Сортировка строк
 function sortStr (a, b) {
   const col = event.currentTarget.dataset.col;
   if (a[col] > b[col]) return 1;
@@ -54,6 +129,7 @@ function sortStr (a, b) {
   return 0;
 }
 
+// Функция сортировки, срабатывает при клике на header столбца
 function sortCol () {
   const table = document.querySelector('table');
   const col = event.currentTarget.dataset.col;
@@ -63,7 +139,6 @@ function sortCol () {
   if (status[col] == 'sorted') {
     jsoooon.reverse();
     addTable(jsoooon);
-    console.log('ok');
   } else {
     if (type == 'string') {
       jsoooon.sort(sortStr);
@@ -77,17 +152,6 @@ function sortCol () {
       status[col] = 'sorted';
     };
   }
-
-  // if (type == 'string') {
-  //   jsoooon.sort(sortStr);
-  //   addTable(jsoooon);
-  //   status[col] = 'sorted';
-  //   console.log(status[col]);
-  // } else {
-  //   jsoooon.sort(sortNum);
-  //   addTable(jsoooon);
-  // };
-
 };
 
 
@@ -119,11 +183,11 @@ function search () {
 // Рисуем таблицу
 function addTable (responseText) {
   const body = document.querySelector('body');
-
+  const bottom = document.querySelector('.bottom');
   // Создаем таблицу
   const table = document.createElement('table');
   table.className = 'table table-bordered text-center';
-  body.appendChild(table);
+  body.insertBefore(table, bottom);
 
   // Создаем header таблицы
   const thead = document.createElement('thead');
@@ -145,13 +209,12 @@ function addTable (responseText) {
     thead.appendChild(td);
   });
 
-
   // Создаем тело таблицы
   const tbody = document.createElement('tbody');
   table.appendChild(tbody);
 
   // Заполняем тело таблицы
-  for (let i = 0; i < responseText.length; i++) {
+  for (let i = 0; i < perPageSelector; i++) {
     const tr = document.createElement('tr');
 
     Object.keys(responseText[i]).forEach(function (key) {

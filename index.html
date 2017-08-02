@@ -8,7 +8,18 @@
   <link rel="stylesheet" href="main.css" />
 </head>
 <body>
-  <div class="text-right"><input type="text" placeholder="Search!" onkeyup="search()" class="text-right bg-info" /></div>
+  <div class="text-right">
+    <div class="btn-group top">
+      <button class="btn btn-default perPage" value="10" onclick="editPerPageSelector()">10</button>
+      <button class="btn btn-default perPage" value="15" onclick="editPerPageSelector()">15</button>
+      <button class="btn btn-default perPage" value="25" onclick="editPerPageSelector()">25</button>
+      <button class="btn btn-default perPage" value="50" onclick="editPerPageSelector()">50</button>
+      <input type="text" placeholder="Search!" onkeyup="search()" class="text-right bg-info" />
+    </div>
+  </div>
+  <div class="bottom text-right">
+    <div class="btn-group btn-group-sm bottomBar"></div>
+  </div>
 <script src="app.js"></script>
 </body>
 </html>
